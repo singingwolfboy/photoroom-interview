@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { BASE64_IMAGE_HEADER } from "../Constants";
 
 interface ImageFolderProps {
   name: string;
   imageMap: Map<string, string | null> | undefined;
+  startOpen?: boolean;
 }
 
-const ImageFolder: React.FC<ImageFolderProps> = ({ name, imageMap }) => {
+const ImageFolder: React.FC<ImageFolderProps> = ({
+  name,
+  imageMap,
+  startOpen = true,
+}) => {
+  const [isOpen, setIsOpen] = useState(startOpen);
   const im = imageMap || new Map();
   const imageTable = (
     <table>
@@ -39,8 +45,10 @@ const ImageFolder: React.FC<ImageFolderProps> = ({ name, imageMap }) => {
 
   return (
     <div>
-      <span>{name}</span>
-      {imageTable}
+      <span onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? "⬇" : "➡️"} {name}
+      </span>
+      {isOpen ? imageTable : null}
     </div>
   );
 };
