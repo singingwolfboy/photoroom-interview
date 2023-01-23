@@ -1,69 +1,35 @@
-import React, { ChangeEvent, useState } from 'react';
-import './App.css';
-import AddButton from './components/AddButton';
-import loadImage, { LoadImageResult } from 'blueimp-load-image';
-import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from './Constants';
+import "./App.css";
+import createPersistedState from "use-persisted-state";
+import Upload from "./components/Upload";
+
+const useImageMapState =
+  createPersistedState<Map<string, string | null>>("imageMap");
 
 function App() {
-  const [result, setResult] = useState<string | null>(null)
-  
-  let uploadImageToServer = (file: File) => {
-    loadImage(
-      file,
-      {
-        maxWidth: 400,
-        maxHeight: 400,
-        canvas: true
-      })
-      .then(async (imageData: LoadImageResult) => {
-        let image = imageData.image as HTMLCanvasElement
-        
-        let imageBase64 = image.toDataURL("image/png")
-        let imageBase64Data = imageBase64.replace(BASE64_IMAGE_HEADER, "")
-        let data = {
-          image_file_b64: imageBase64Data,
-        }
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'x-api-key': API_KEY
-          },
-          body: JSON.stringify(data)
-        });
+  const [imageMap, setImageMap] = useImageMapState(new Map());
 
-        if (response.status >= 400 && response.status < 600) {
-          throw new Error("Bad response from server");
-        }
+  const addInputImage = (imageBase64: string) => {
+    const imageMapCopy = new Map(imageMap);
+    imageMapCopy.set(imageBase64, null);
+    return setImageMap(imageMapCopy);
+  };
 
-        const result = await response.json();
-        const base64Result = BASE64_IMAGE_HEADER + result.result_b64
-        setResult(base64Result)
-      })
-      
-      .catch(error => {
-        console.error(error)
-      })
-    }
-    
-    let onImageAdd = (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files[0]) {
-        uploadImageToServer(e.target.files[0])
-      } else {
-        console.error("No file was picked")
-      }
-    }
-    
-    return (
-      <div className="App">
-        <header className="App-header">
-          {!result && <AddButton onImageAdd={onImageAdd}/>}
-          {result && <img src={result} width={300} alt="result from the API"/>}
-        </header>
-      </div>
-      );
-    }
-    
-    export default App;
-    
+  const setOutputImage = (
+    inputImageBase64: string,
+    outputImageBase64: string
+  ) => {
+    const imageMapCopy = new Map(imageMap);
+    imageMapCopy.set(inputImageBase64, outputImageBase64);
+    return setImageMap(imageMapCopy);
+  };
+
+  return (
+    <div className="App">
+      <header>
+        <Upload addInputImage={addInputImage} setOutputImage={setOutputImage} />
+      </header>
+    </div>
+  );
+}
+
+export default App;
