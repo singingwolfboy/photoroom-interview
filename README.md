@@ -1,5 +1,3 @@
-# Getting Started with this template
+# PhotoRoom interview code
 
-Start the app using the following command, replacing the key by your API key:
-
-    REACT_APP_API_KEY="your_api_key" yarn run start
+This code is part of an interview project for [PhotoRoom](https://www.photoroom.com). It is a basic front-end for the PhotoRoom API, as well as some design documentation for a proposed backend API.
