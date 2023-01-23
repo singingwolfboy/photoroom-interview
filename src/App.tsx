@@ -1,13 +1,13 @@
 import "./App.css";
-import createPersistedState from "use-persisted-state";
+import useLocalStorageState from "use-local-storage-state";
+import superjson from 'superjson';
 import Upload from "./components/Upload";
-import ImageFolder from "./components/ImageFolder"
-
-const useImageMapState =
-  createPersistedState<Map<string, string | null>>("imageMap");
+import ImageFolder from "./components/ImageFolder";
 
 function App() {
-  const [imageMap, setImageMap] = useImageMapState(new Map());
+  const [imageMap, setImageMap] = useLocalStorageState<
+    Map<string, string | null>
+  >("imageMap", { defaultValue: new Map(), serializer: superjson });
 
   const addInputImage = (imageBase64: string) => {
     const imageMapCopy = new Map(imageMap);

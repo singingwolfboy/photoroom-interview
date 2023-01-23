@@ -3,13 +3,14 @@ import { BASE64_IMAGE_HEADER } from "../Constants";
 
 interface ImageFolderProps {
   name: string;
-  imageMap: Map<string, string | null>;
+  imageMap: Map<string, string | null> | undefined;
 }
 
 const ImageFolder: React.FC<ImageFolderProps> = ({ name, imageMap }) => {
+  const im = imageMap || new Map();
   const imageTable = (
     <table>
-      {Array.from(imageMap).map(([input, output]) => {
+      {Array.from(im).map(([input, output]) => {
         return (
           <tr>
             <td>
