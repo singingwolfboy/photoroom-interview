@@ -2,6 +2,27 @@
 
 This code is part of an interview project for [PhotoRoom](https://www.photoroom.com). It is a basic front-end for the PhotoRoom API, as well as some design documentation for a proposed backend API.
 
+# Running this code
+
+First, install the dependencies:
+
+```
+npm install
+```
+
+Then run the development server. Note that this documentation uses a fake key,
+but you will need a real API key for your API requests to succeed!
+
+```
+REACT_APP_API_KEY="fake-key" npm run start
+```
+
+Finally, visit http://localhost:3000 to view the frontend. Try adding some images,
+and notice how the result appears in the browser! You can also refresh the page,
+and the data will not be lost; it is stored using the browser's
+[`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+system.
+
 # Folder API
 
 This is a proposed API for handling file sync between frontend and backend.
@@ -18,8 +39,8 @@ to the PhotoRoom service, we store both the original input image and the
 resulting background-less image in this object storage before returning
 an API response to the user.
 
-
 ### Image
+
 The "image" JSON object looks like this:
 
 ```
@@ -36,6 +57,7 @@ after the background has been removed. Both can be used to download the
 relevant image data for the photo when requested.
 
 ### Folder
+
 The "folder" JSON object looks like this:
 
 ```
@@ -66,7 +88,7 @@ above.
 - `GET /api/images/:id`: This will return the metadata for an individual image
   in the JSON structure defined above, or a "404 Not Found" exception if the
   ID does not map to an image that the user owns. Note that this API does
-  *not* return the actual image data, only the metadata.
+  _not_ return the actual image data, only the metadata.
 
 - `GET /api/objects/:id`: This is a pass-through API to the object storage
   service. Given an appropriate ID, it will return the image data for a particular
@@ -131,7 +153,7 @@ distributing application globally when requested.
 In order to enable live collaboration with this API, we could assign state IDs
 every time a user performed an action that would change the state on the server.
 For example, adding a new folder with the `POST /api/folders` method would return
-the information about the newly-created folder, *and* a new state ID. Any time
+the information about the newly-created folder, _and_ a new state ID. Any time
 a user attempts to change the state on the server, they must provide the latest
 state ID; if they provide an out-of-date state ID, the change is rejected.
 
