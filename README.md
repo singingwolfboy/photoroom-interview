@@ -102,3 +102,21 @@ above.
 
 - `DELETE /api/images/:id`: Delete an image. It will be automatically removed from
   the folder that holds it. HTTP 204 for success, HTTP 404 if the image does not exist.
+
+# Implementation
+
+If I were implementing this API, I would probably build it in Python, since that is
+the backend language that I'm most familiar with. Data would be stored in a
+[PostgreSQL](https://www.postgresql.org) database, and I would use
+[Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html)
+for the object storage. (Backblaze B2 is S3-compatible, and much cheaper.)
+
+I would use [FastAPI](https://fastapi.tiangolo.com) as the web framework; it is
+easy to read & write, asychronous, and extremely efficient. I would use
+[SQLAlchemy](https://www.sqlalchemy.org) as my ORM (object relational mapper),
+in order to write SQL queries effectively and avoid performance problems.
+For a task queue, I would probably start with
+[Procrastinate](https://procrastinate.readthedocs.io/), and see how well that would
+scale for orchestrating tasks using the Postgres LISTEN/NOTIFY system.
+If that produced too much load on the database, I could switch to
+[Celery](https://docs.celeryq.dev) running on [RabbitMQ](https://www.rabbitmq.com).
