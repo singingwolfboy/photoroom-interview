@@ -35,9 +35,11 @@ storage service, similar to Amazon S3. Given a key in this object storage
 service, the client can download the data for a given image, whether that
 data is the original input image (with background), or the resulting image
 without a background. We also assume that when images are uploaded
-to the PhotoRoom service, we store both the original input image and the
-resulting background-less image in this object storage before returning
-an API response to the user.
+to the PhotoRoom service, we store the original input image in this
+object storage before returning an API response to the user. In the background,
+the image will be processed to have its background removed, and the resulting
+background-less image will also be stored in the object storage,
+without modifying the original image.
 
 ### Image
 
