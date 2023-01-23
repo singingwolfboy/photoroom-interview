@@ -1,6 +1,7 @@
 import "./App.css";
 import createPersistedState from "use-persisted-state";
 import Upload from "./components/Upload";
+import ImageFolder from "./components/ImageFolder"
 
 const useImageMapState =
   createPersistedState<Map<string, string | null>>("imageMap");
@@ -28,6 +29,7 @@ function App() {
       <header>
         <Upload addInputImage={addInputImage} setOutputImage={setOutputImage} />
       </header>
+      <ImageFolder name="Untitled Folder" imageMap={imageMap} />
     </div>
   );
 }

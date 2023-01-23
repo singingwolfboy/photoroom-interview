@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent } from "react";
 import AddButton from "./AddButton";
 import loadImage, { LoadImageResult } from "blueimp-load-image";
 import { API_KEY, API_URL, BASE64_IMAGE_HEADER } from "../Constants";
@@ -8,9 +8,7 @@ interface UploadProps {
   setOutputImage: (inputImageBase64: string, outputImageBase64: string) => void;
 }
 
-const Upload: React.FC<UploadProps> = () => {
-  const [result, setResult] = useState<string | null>(null);
-
+const Upload: React.FC<UploadProps> = ({ addInputImage, setOutputImage }) => {
   let uploadImageToServer = (file: File) => {
     loadImage(file, {
       maxWidth: 400,
@@ -22,6 +20,7 @@ const Upload: React.FC<UploadProps> = () => {
 
         let imageBase64 = image.toDataURL("image/png");
         let imageBase64Data = imageBase64.replace(BASE64_IMAGE_HEADER, "");
+        addInputImage(imageBase64Data)
         let data = {
           image_file_b64: imageBase64Data,
         };
@@ -40,8 +39,7 @@ const Upload: React.FC<UploadProps> = () => {
         }
 
         const result = await response.json();
-        const base64Result = BASE64_IMAGE_HEADER + result.result_b64;
-        setResult(base64Result);
+        setOutputImage(imageBase64Data, result.result_b64);
       })
 
       .catch((error) => {
@@ -59,8 +57,7 @@ const Upload: React.FC<UploadProps> = () => {
 
   return (
     <div className="Upload">
-      {!result && <AddButton onImageAdd={onImageAdd} />}
-      {result && <img src={result} width={300} alt="result from the API" />}
+      <AddButton onImageAdd={onImageAdd} />
     </div>
   );
 };
