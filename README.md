@@ -120,3 +120,46 @@ For a task queue, I would probably start with
 scale for orchestrating tasks using the Postgres LISTEN/NOTIFY system.
 If that produced too much load on the database, I could switch to
 [Celery](https://docs.celeryq.dev) running on [RabbitMQ](https://www.rabbitmq.com).
+
+In terms of deployment, it should be able to run on any of the major cloud systems
+(AWS, Azure, etc). I would also try running it on [Fly.io](https://fly.io),
+which could result in major performance improvements due to the system automatically
+distributing application globally when requested.
+
+# Enabling Live Collaboration
+
+In order to enable live collaboration with this API, we could assign state IDs
+every time a user performed an action that would change the state on the server.
+For example, adding a new folder with the `POST /api/folders` method would return
+the information about the newly-created folder, *and* a new state ID. Any time
+a user attempts to change the state on the server, they must provide the latest
+state ID; if they provide an out-of-date state ID, the change is rejected.
+
+We would also need to add a new endpoint to allow users to receive deltas: representations
+of the changes that other users make. A delta object might look like this:
+
+```
+{
+    stateId: "abc123",
+    action: "FOLDER_ADDED",
+    actor: "user-987",
+    data: {
+        name: "folder two",
+        createdAt: "2023-01-03T10:10:10Z"
+    }
+}
+```
+
+As you can see, this provides the latest state ID, along with all the relevant information
+about the change itself. This allows frontend clients to update their state by applying
+deltas as they are received.
+
+The best way to receive these deltas would be using a websocket connection, which would
+allow the server to push deltas to clients. If the connection is disrupted, the client
+can use the `GET /api/folders` API method to resync.
+
+Depending on how important live collaboration is, we could also restructure this API
+to use [CRDTs](https://crdt.tech) (conflict-free replicated data types) to represent
+all data changes. This would not only allow for robust collaboration without every user
+needing to stay constantly in sync, but would also open up possibilities for
+decentralized operations; syncing without even needing the server to be running constantly!
