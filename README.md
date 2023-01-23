@@ -95,7 +95,7 @@ above.
 - `PUT /api/images/:id`: Update the name of an image, or move the image from one
   folder to another. To move the image to a different folder, provide a "folderId"
   argument, like this: `{folderId: "5648b89f-f216-415e-bbd4-df311ff912e8"}`.
-. Return the newly-updated image JSON.
+  Return the newly-updated image JSON.
 
 - `DELETE /api/folders/:id`: Delete a folder, and all images inside of it. Returns
   HTTP 204 No Content on success, for HTTP 404 Not Found if the folder does not exist.
